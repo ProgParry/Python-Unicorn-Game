@@ -1,38 +1,41 @@
-import pygame
+import pygame, sys
 
-pygame.init()
-WINDOW_WIDTH, WINDOW_HEIGHT = 1280, 720
-display = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
-clock = pygame.time.Clock()
-running = True
-dt = 0
+class Game:
+    def __init__(self):
+        pygame.init()
 
-player_pos = pygame.Vector2(display.get_width() / 2, display.get_height() / 2)
+        pygame.display.set_caption('Unicorn  Game')
+        self.screen = pygame.display.set_mode((640,480))
 
+        self.clock = pygame.time.Clock()
 
-while running:
-    # event loop
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+        self.img = pygame.image.load('Unicorn drawing.png')
+        self.img_pos = [-50, -260]
+        self.movement = [False, False]
 
-    # draw the game
-    display.fill("purple")
+    def run(self):
+        while True:
+            self.screen.fill((14, 219, 248))
+            self.img_pos[1] += (self.movement[1] - self.movement[0]) * 5
+            self.screen.blit(self.img, self.img_pos)
 
-    pygame.draw.circle(display, "red", player_pos, 40)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_UP:
+                        self.movement[0] = True
+                    if event.key == pygame.K_DOWN:
+                        self.movement[1] = True
+                if event.type == pygame.KEYUP:
+                    if event.key == pygame.K_UP:
+                        self.movement[0] = False
+                    if event.key == pygame.K_DOWN:
+                        self.movement[1] = False
 
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_w]:
-        player_pos.y -= 300 * dt
-    if keys[pygame.K_s]:
-        player_pos.y += 300 * dt
-    if keys[pygame.K_a]:
-        player_pos.x -= 300 * dt
-    if keys[pygame.K_d]:
-        player_pos.x += 300 * dt
+            
+            pygame.display.update()
+            self.clock.tick(60)
 
-    pygame.display.flip()
-
-    dt = clock.tick(60) / 1000
-
-pygame.quit()
+Game().run()
